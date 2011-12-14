@@ -33,22 +33,32 @@ $.widget( "mobile.fetchlink", $.mobile.widget, {
 				if ( url && method ) {
 					
 					targetEl.ajaxStart(function(){
-						$(this).trigger('inlineLoader');
+						var $el = $(this);
+					
+						$el
+							.addClass('ui-loading-inline')
+							.trigger('inlineLoader')
+							.height( $el.height() );
 					 });
 					
 					$.get( url, function( data ) {
 						var rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
 							data = $( $("<div/>").append( data.replace( rscript, "" ) ).find( load ) )
 							responseEl = !fragment ? $( data.html() ) : data;
-									
+
+						/* TODO: Fetched relative a/img paths are broken by the base tag. */
+							
 						setTimeout(function() {				
 							targetEl[ method ]( responseEl.addClass('fade in') );
 						
 							responseEl
 								.trigger( "create" )
 								.trigger( "fetchlink", { target : targetEl, data: responseEl });
+								
+							targetEl
+								.removeClass('ui-loading-inline')
+								.height('auto');
 						}, 300);
-						
 					});					
 				}
 			}
@@ -62,7 +72,7 @@ $( document ).bind( "inlineLoader", function( e ){
 	$( e.target ).children().removeClass('fade in').addClass('fade out');
 	
 	setTimeout(function() {
-		$( e.target ).html( "<div class='ui-loader-inline'><span class='ui-icon ui-icon-loading spin'></span></div>" );
+		$( e.target ).html( "<div class='ui-loader-inline fade in'><span class='ui-icon ui-icon-loading spin'></span></div>" );
 	}, 300);
 });
 
