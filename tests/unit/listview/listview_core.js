@@ -79,6 +79,23 @@
 			}
 		]);
 	});
+	
+	asyncTest( "Ensure that the correct icon positioning classes are being attached to list items.", function(){
+		$.testHelper.pageSequence([
+			function() {
+				$.testHelper.openPage("#iconpostest");
+			},
+			function() {	
+				var ul = $('#iconpostest ul');
+
+				ok( ul.find('[data-nstest-iconpos="left"]').hasClass('ui-btn-icon-left'), "Correct link icon positioning class added to list items with data-iconpos='left' attribute." );
+				ok( ul.find('[data-nstest-iconpos="right"]').hasClass('ui-btn-icon-right'), "Correct link icon positioning class added to list items with data-iconpos='right' attribute." );
+				ok( ul.find('li').not('[data-nstest-iconpos]').hasClass('ui-btn-icon-right'), "Without a postitioning attribute on the li, the link icon is positioned on the right." );
+				
+				start();
+			}
+		]);
+	});
 
 	module('Nested List Test');
 
@@ -135,7 +152,7 @@
 			}
 		]);
 	});
-
+	
 	test( "nested list title should use first text node, regardless of line breaks", function(){
 		ok($('#nested-list-test .linebreaknode').text() === "More animals", 'Text should be "More animals"');
 	});
@@ -602,6 +619,7 @@
 		ok( !$("#enhancetest").appendTo(".ui-page-active").find(".ui-listview").length, "did not have enhancements applied" );
 		ok( $("#enhancetest").trigger("create").find(".ui-listview").length, "enhancements applied" );
 	});
+	
 
 	module( "Cached Linked List" );
 
