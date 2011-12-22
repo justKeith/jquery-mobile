@@ -105,7 +105,23 @@
 			<li data-icon="alert"><a href="#">Alerts</a></li>
 			<li data-icon="false"><a href="#">No icon</a></li>
 		</ul>
-	
+		
+		<h2>Icon positioning</h2>
+		
+		<p>The default icon position for each list item is to the right. To override this, set the <code>data-iconpos="left"</code> attribute on the desired list item.</p>
+			
+		<pre>
+<code>
+&lt;li data-iconpos="left"&gt;&lt;a href="#"&gt;Left to Right&lt;/a&gt;&lt;/li&gt;
+&lt;li data-iconpos="right"&gt;&lt;a href="#"&gt;Right to Left&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#"&gt;Left to Right&lt;/a&gt;&lt;/li&gt;
+</code>
+		</pre>
+			<ul data-role="listview">
+				<li data-iconpos="left"><a href="#">Left to Right</a></li>
+				<li data-iconpos="right"><a href="#">Right to Left</a></li>
+				<li><a href="#">Also Left to Right</a></li>
+			</ul>
 		
 		<h2>Theming split buttons</h2>
 		
