@@ -1,6 +1,7 @@
 <?php
 $type = 'text/javascript';
 $files = array(
+	'jquery.js',
 	'../LICENSE-INFO.txt',
 	// note that define is only included here as a means
 	// to revert to the pre async include, and should not be
