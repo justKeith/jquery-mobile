@@ -8,6 +8,21 @@
 		// the previous set has completed loading. That is, each require and it's dependencies in a
 		// set will be loaded asynchronously, but each set will be run in serial.
 		asyncLoad: function( seq ) {
+			var results = /[\\?&]jquery=([^&#]*)/.exec( location.search ), version, defaultVersion;
+
+			// if the user has defined a version of jquery in the query params
+      // get rid of jquery and push the version of jquery we want to load on to
+      // the async load stack
+			if( results ) {
+				defaultVersion = $().jquery;
+
+				// make sure the version of jquery that's in the page by default is unloaded
+				window.jQuery = window.$ = undefined;
+				version = decodeURIComponent(results[results.length - 1].replace(/\+/g, " "));
+				if( window.console ) console.log( "!!! Reloading jquery as v" + version );
+				seq.unshift( ["order!jquery-" + version] );
+			}
+
 			require({
 				baseUrl: "../../../js"
 			});
@@ -19,12 +34,21 @@
 						if ( $fixture.length ) {
 							QUnit.config.fixture = $fixture.html();
 						}
+
 						QUnit.start();
 					});
+
 					return;
 				}
 
 				require( seq[i], function() {
+					// NOTE the window.$() because $ is the old version in this context
+					// if we're loading jquery check that the jquery version has changed, otherwise
+					// warn the user in the console
+					if( seq[i][0].indexOf("jquery-") > -1 && window.$().jquery === defaultVersion && window.console ){
+						console.log( "!!! The default version === search param version, ie " + defaultVersion);
+					}
+
 					loadSeq(seq, i + 1);
 				});
 			}
