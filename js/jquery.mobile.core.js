@@ -294,6 +294,9 @@ define( [ "jquery", "../external/requirejs/text!../version.txt", "./jquery.mobil
 	$.find.matchesSelector = function( node, expr ) {
 		return $.find( expr, null, null, [ node ] ).length > 0;
 	};
+
+	// provide an event attribute namespace for the mobile framework
+	$.Event.prototype.mobile = {};
 })( jQuery, this );
 //>>excludeStart("jqmBuildExclude", pragmas.jqmBuildExclude);
 });

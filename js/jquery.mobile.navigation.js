@@ -386,7 +386,7 @@ define( [
 			autofocus.focus();
 			return;
 		}
-		
+
 		if( pageTitle.length ) {
 			pageTitle.focus();
 		}
@@ -1148,16 +1148,38 @@ define( [
 		return path.makeUrlAbsolute( url, base);
 	}
 
-
 	//The following event bindings should be bound after mobileinit has been triggered
 	//the following function is called in the init file
 	$.mobile._registerInternalEvents = function(){
+		var eventSelectorPairs, selector;
+
+		// when ignoring content is enabled catch events before they flow to
+		// the handlers bound below.
+		if( $.mobile.ignoreContentEnabled ) {
+			eventSelectorPairs = {
+				submit: "form",
+				// both vclick and click are handled at the document element
+				// so a more specific selector that data-ajax=false is unnecessary
+				vclick: "",
+				click: ""
+			};
+
+			for( event in eventSelectorPairs ){
+				selector = eventSelectorPairs[event];
+
+				// ignore events on chilren of data-ajax=false elements
+				$( document ).on( event, ":jqmData(ajax='false') " + selector, function( event ) {
+					event.mobile.ignore = true;
+				});
+			}
+		}
 
 		//bind to form submit events, handle with Ajax
 		$( document ).delegate( "form", "submit", function( event ) {
 			var $this = $( this );
 			if( !$.mobile.ajaxEnabled ||
-				$this.is( ":jqmData(ajax='false')" ) ) {
+					$this.is( ":jqmData(ajax='false')" ) ||
+					event.mobile.ignore ) {
 					return;
 				}
 
@@ -1206,7 +1228,7 @@ define( [
 		$( document ).bind( "vclick", function( event ) {
 			// if this isn't a left click we don't care. Its important to note
 			// that when the virtual event is generated it will create
-			if ( event.which > 1 || !$.mobile.linkBindingEnabled ){
+			if ( event.which > 1 || !$.mobile.linkBindingEnabled || event.mobile.ignore ){
 				return;
 			}
 
@@ -1228,7 +1250,7 @@ define( [
 
 		// click routing - direct to HTTP or Ajax, accordingly
 		$( document ).bind( "click", function( event ) {
-			if( !$.mobile.linkBindingEnabled ){
+			if( !$.mobile.linkBindingEnabled || event.mobile.ignore ){
 				return;
 			}
 
