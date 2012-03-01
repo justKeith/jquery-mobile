@@ -2,7 +2,7 @@ label.ui-slider { font-size: 16px; line-height: 1.4;  font-weight: normal; margi
 input.ui-slider-input,
 .ui-field-contain input.ui-slider-input { display: inline-block; width: 50px; }
 select.ui-slider-switch { display: none; }
-div.ui-slider { position: relative; display: inline-block; overflow: visible; height: 15px; padding: 0; margin: 0 2% 0 20px; top: 4px; width: 65%; }
+div.ui-slider { position: relative; display: inline-block; overflow: visible; height: 15px; padding: 0; margin: 0 2%; top: 4px; width: 65%; }
 div.ui-slider-mini { height: 12px; margin-left: 10px; }
 div.ui-slider-bg { border: none; height: 100%; padding-right: 8px; }
 .ui-controlgroup a.ui-slider-handle, a.ui-slider-handle { position: absolute; z-index: 1;  top: 50%; width: 28px; height: 28px; margin-top: -15px; margin-left: -15px; outline: 0; }
@@ -14,7 +14,12 @@ div.ui-slider-mini a.ui-slider-handle .ui-btn-inner { height: 30px; width: 30px;
 	.ui-field-contain label.ui-slider { vertical-align: top; display: inline-block; width: 20%; margin: 0 2% 0 0; }
 	.ui-field-contain div.ui-slider { width: 43%; }
 	.ui-field-contain div.ui-slider-switch { width: 5.5em; }
-}	
+}
+
+@media all and (min-width: 450px){
+	.ui-field-contain div.ui-slider { width: 50%; }
+	.ui-field-contain div.ui-slider-switch { width: 5.5em; }
+}
 
 div.ui-slider-switch { height: 32px; margin-left: 0; width: 5em; }
 a.ui-slider-handle-snapping { -webkit-transition: left 70ms linear; -moz-transition: left 70ms linear; }
