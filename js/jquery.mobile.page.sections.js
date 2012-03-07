@@ -51,9 +51,10 @@ $( document ).delegate( ":jqmData(role='page'), :jqmData(role='dialog')", "pagec
 			leftbtn	= $headeranchors.hasClass( "ui-btn-left" );
 			rightbtn = $headeranchors.hasClass( "ui-btn-right" );
 
-			leftbtn = leftbtn || $headeranchors.eq( 0 ).not( ".ui-btn-right" ).addClass( "ui-btn-left" ).length;
-
-			rightbtn = rightbtn || $headeranchors.eq( 1 ).addClass( "ui-btn-right" ).length;
+			if( role == "header" ) {
+				leftbtn = leftbtn || $headeranchors.eq( 0 ).not( ".ui-btn-right, [data-inline='false']" ).addClass( "ui-btn-left" ).length;
+				rightbtn = rightbtn || $headeranchors.eq( 1 ).not( "[data-inline='false']" ).addClass( "ui-btn-right" ).length;
+			}
 
 			// Auto-add back btn on pages beyond first view
 			if ( o.addBackBtn &&

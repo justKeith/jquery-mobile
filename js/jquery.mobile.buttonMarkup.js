@@ -66,6 +66,8 @@ $.fn.buttonMarkup = function( options ) {
 
 		if ( o.inline ) {
 			buttonClass += " ui-btn-inline";
+		} else if ( o.inline != undefined && o.inline === false ) {
+			buttonClass += " ui-btn-block"; // Used to control styling in headers/footers, where buttons default to inline.
 		}
 
 		if ( o.mini ) {
@@ -148,7 +150,6 @@ $.fn.buttonMarkup.defaults = {
 	corners: true,
 	shadow: true,
 	iconshadow: true,
-	inline: false,
 	wrapperEls: "span"
 };
 
