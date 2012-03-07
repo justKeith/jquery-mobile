@@ -4,12 +4,20 @@
 (function($){
 	module("jquery.mobile.buttonMarkup.js");
 
-	test( "header buttons should have the header class", function() {
+	test( "Header/footer buttons should be styled appropriately", function() {
 		var headerButton1 = $("#header-button-1"),
-		    headerButton2 = $("#header-button-2");
+		    headerButton2 = $("#header-button-2"),
+			headerButton3 = $("#header-button-3"),
+			headerButton4 = $("#header-button-4"),
+			footerButton1 = $("#footer-button-1"),
+			footerButton2 = $("#footer-button-2");
 
 		ok((headerButton1.hasClass("ui-btn-left") &&
 		    headerButton2.hasClass("ui-btn-right")), "first header button should have class 'ui-btn-left' and the second one should have 'ui-btn-right'");
+		ok( ( !footerButton1.hasClass("ui-btn-left") && !footerButton2.hasClass("ui-btn-right") ), "'ui-btn-left' and 'ui-btn-right' should not be applied to buttons in footers.");
+		ok( ( headerButton3.css("display") == "inline-block" && footerButton1.css("display") == "inline-block" ), "Buttons in headers/footers should default to inline styling." );
+		ok( ( headerButton4.attr("data-nstest-inline") == "false" && headerButton4.hasClass("ui-btn-block") ) && 
+			( footerButton2.attr("data-nstest-inline") == "false" && footerButton2.hasClass("ui-btn-block") ), "Buttons in headers/footers should not default to inline styling if `data-inline` is explicitly set to false.");
 	});
 
 	test( "control group buttons should be enhanced inside a footer", function(){
@@ -62,4 +70,5 @@
 		ok( $mini.is('.ui-mini'), "Original element has data attribute, enhanced version recieves .ui-mini." );
 		ok( $minicontrol.is('.ui-mini'), "Controlgroup has data attribute and recieves .ui-mini.");
 	});
+	
 })(jQuery);
