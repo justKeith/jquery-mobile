@@ -66,13 +66,13 @@ $.fn.buttonMarkup = function( options ) {
 
 		if ( o.inline ) {
 			buttonClass += " ui-btn-inline";
-		} else if ( o.inline != undefined && o.inline === false ) {
+		} else if ( o.inline !== undefined && o.inline == false ) {
 			buttonClass += " ui-btn-block"; // Used to control styling in headers/footers, where buttons default to inline.
 		}
-
+		
 		if ( o.mini ) {
 			buttonClass += " ui-mini";
-		} else if ( o.mini && o.mini === false ) {
+		} else if ( o.mini !== undefined && o.mini == false ) {
 			buttonClass += " ui-fullsize"; // Used to control styling in headers/footers, where buttons default to `mini` style.
 		}
 
