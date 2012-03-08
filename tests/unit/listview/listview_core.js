@@ -4,7 +4,8 @@
 
 // TODO split out into seperate test files
 (function($){
-	var home = $.mobile.path.parseUrl( location.href ).pathname + location.search;
+	var home = $.mobile.path.parseUrl( location.href ).pathname + location.search,
+		insetVal = $.mobile.listview.prototype.options.inset;
 
 	$.mobile.defaultTransition = "none";
 
@@ -19,6 +20,10 @@
 
 				$.mobile.changePage( home );
 			}
+		},
+
+		teardown: function() {
+			$.mobile.listview.prototype.options.inset = insetVal;
 		}
 	});
 
@@ -789,4 +794,65 @@
 			start
 		]);
 	});
+
+	asyncTest( "list filter is inset from prototype options value", function() {
+		$.mobile.listview.prototype.options.inset = true;
+		$("#list-inset-filter-prototype").page();
+
+		$.testHelper.pageSequence([
+			function() {
+				$.mobile.changePage("#list-inset-filter-prototype");
+			},
+
+			function( timedOut) {
+				ok( !timedOut );
+				same( $.mobile.activePage.find("form.ui-listview-filter-inset").length, 1, "form is inset");
+				window.history.back();
+			},
+
+			start
+		]);
+	});
+
+	asyncTest( "list filter is inset from data attr value", function() {
+		$.mobile.listview.prototype.options.inset = false;
+		$("#list-inset-filter-data-attr").page();
+
+		$.testHelper.pageSequence([
+			function() {
+				$.mobile.changePage("#list-inset-filter-data-attr");
+			},
+
+			function( timedOut) {
+				ok( !timedOut );
+				same( $.mobile.activePage.find("form.ui-listview-filter-inset").length, 1, "form is inset");
+				window.history.back();
+			},
+
+			start
+		]);
+	});
+
+	asyncTest( "split list items respect the icon", function() {
+		$.testHelper.pageSequence([
+			function() {
+				$.mobile.changePage("#split-list-icon");
+			},
+
+			function() {
+				$.mobile.activePage.find("li").each(function(i, elem){
+					var $elem = $(elem),
+						icon = $elem.jqmData( "icon" ),
+						order = [ "star", "plug", "arrow-r" ];
+
+					same( $elem.find("span.ui-icon-" + order[i]).length, 1, "there should be one " + icon + " icon" );
+				});
+
+				window.history.back();
+			},
+
+			start
+		]);
+	});
+
 })(jQuery);

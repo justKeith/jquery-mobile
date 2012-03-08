@@ -41,7 +41,7 @@ $.fn.buttonMarkup = function( options ) {
 		});
 
 		// Check if this element is already enhanced
-		buttonElements = $.data(((e.tagName === "INPUT" || e.tagName === "BUTTON") ? e.parentNode : e), "buttonElements")
+		buttonElements = $.data(((e.tagName === "INPUT" || e.tagName === "BUTTON") ? e.parentNode : e), "buttonElements");
 
 		if (buttonElements) {
 			e = buttonElements.outer;
@@ -63,17 +63,19 @@ $.fn.buttonMarkup = function( options ) {
 		}
 
 		buttonClass = "ui-btn ui-btn-up-" + o.theme;
+		buttonClass += o.inline ? " ui-btn-inline" : "";
+		buttonClass += o.shadow ? " ui-shadow" : "";
+		buttonClass += o.iconpos? " ui-btn-icon-" + o.iconpos : "";
+		buttonClass += o.corners ? " ui-btn-corner-all" : "";
 
-		if ( o.inline ) {
-			buttonClass += " ui-btn-inline";
-		} else if ( o.inline !== undefined && o.inline == false ) {
-			buttonClass += " ui-btn-block"; // Used to control styling in headers/footers, where buttons default to inline.
+		if ( o.mini !== undefined ) {
+			// Used to control styling in headers/footers, where buttons default to `mini` style.
+			buttonClass += o.mini ? " ui-mini" : " ui-fullsize";
 		}
 		
-		if ( o.mini ) {
-			buttonClass += " ui-mini";
-		} else if ( o.mini !== undefined && o.mini == false ) {
-			buttonClass += " ui-fullsize"; // Used to control styling in headers/footers, where buttons default to `mini` style.
+		if ( o.inline !== undefined ) {
+			// Used to control styling in headers/footers, where buttons default to `mini` style.
+			buttonClass += o.inline ? " ui-btn-inline" : " ui-btn-block";
 		}
 
 		if ( o.icon ) {
@@ -81,50 +83,40 @@ $.fn.buttonMarkup = function( options ) {
 			o.iconpos = o.iconpos || "left";
 
 			iconClass = "ui-icon " + o.icon;
+			iconClass += o.iconshadow ? " ui-icon-shadow" : "";
+		}
+    
+		innerClass += o.corners ? " ui-btn-corner-all" : "";
 
-			if ( o.iconshadow ) {
-				iconClass += " ui-icon-shadow";
-			}
+		if ( o.iconpos && o.iconpos === "notext" && !el.attr( "title" ) ) {
+			el.attr( "title", el.getEncodedText() );
 		}
 
-		if ( o.iconpos ) {
-			buttonClass += " ui-btn-icon-" + o.iconpos;
-
-			if ( o.iconpos == "notext" && !el.attr( "title" ) ) {
-				el.attr( "title", el.getEncodedText() );
-			}
+		if ( buttonElements ) {
+			el.removeClass( buttonElements.bcls || "" );
 		}
-
-		if ( o.corners ) {
-			buttonClass += " ui-btn-corner-all";
-			innerClass += " ui-btn-corner-all";
-		}
-
-		if ( o.shadow ) {
-			buttonClass += " ui-shadow";
-		}
-
-		if (buttonElements)
-			el.removeClass((buttonElements.bcls || ""));
 		el.removeClass( "ui-link" ).addClass( buttonClass );
 
 		buttonInner.className = innerClass;
 
 		buttonText.className = textClass;
-		if (!buttonElements)
+		if ( !buttonElements ) {
 			buttonInner.appendChild( buttonText );
+		}
 		if ( buttonIcon ) {
 			buttonIcon.className = iconClass;
-			if (!(buttonElements && buttonElements.icon))
+			if ( !(buttonElements && buttonElements.icon) ) {
 				buttonInner.appendChild( buttonIcon );
+			}
 		}
 
 		while ( e.firstChild && !buttonElements) {
 			buttonText.appendChild( e.firstChild );
 		}
 
-		if (!buttonElements)
+		if ( !buttonElements ) {
 			e.appendChild( buttonInner );
+		}
 
 		// Assign a structure containing the elements of this button to the elements of this button. This
 		// will allow us to recognize this as an already-enhanced button in future calls to buttonMarkup().
@@ -139,8 +131,9 @@ $.fn.buttonMarkup = function( options ) {
 		$.data(e,           'buttonElements', buttonElements);
 		$.data(buttonInner, 'buttonElements', buttonElements);
 		$.data(buttonText,  'buttonElements', buttonElements);
-		if (buttonIcon)
+		if (buttonIcon) {
 			$.data(buttonIcon, 'buttonElements', buttonElements);
+		}
 	}
 
 	return this;
@@ -176,61 +169,41 @@ var attachEvents = function() {
 	var hoverDelay = 200,
 		hov, foc;
 	$( document ).bind( {
-		"vmousedown": function( event ) {
-			var btn = closestEnabledButton( event.target ),
-				$btn, theme;
-
-			if ( btn ) {
-				$btn = $( btn );
+		"vmousedown vmousecancel vmouseup vmouseover vmouseout focus blur scrollstart": function( event ) {
+			var theme,
+				$btn = $( closestEnabledButton( event.target ) ),
+				evt = event.type;
+		
+			if ( $btn.length ) {
 				theme = $btn.attr( "data-" + $.mobile.ns + "theme" );
-
-				if( $.support.touch ) {
-					hov = setTimeout(function() {
+		
+				if ( evt === "vmousedown" ) {
+					if ( $.support.touch ) {
+						hov = setTimeout(function() {
+							$btn.removeClass( "ui-btn-up-" + theme ).addClass( "ui-btn-down-" + theme );
+						}, hoverDelay );
+					} else {
 						$btn.removeClass( "ui-btn-up-" + theme ).addClass( "ui-btn-down-" + theme );
-					}, hoverDelay );
-				} else {
-					$btn.removeClass( "ui-btn-up-" + theme ).addClass( "ui-btn-down-" + theme );
-				}
-			}
-		},
-		"vmousecancel vmouseup": function( event ) {
-			var btn = closestEnabledButton( event.target ),
-				$btn, theme;
-
-			if ( btn ) {
-				$btn = $( btn );
-				theme = $btn.attr( "data-" + $.mobile.ns + "theme" );
-				$btn.removeClass( "ui-btn-down-" + theme ).addClass( "ui-btn-up-" + theme );
-			}
-		},
-		"vmouseover focus": function( event ) {
-			var btn = closestEnabledButton( event.target ),
-				$btn, theme;
-
-			if ( btn ) {
-				$btn = $( btn );
-				theme = $btn.attr( "data-" + $.mobile.ns + "theme" );
-
-				if( $.support.touch ) {
-					foc = setTimeout(function() {
+					}
+				} else if ( evt === "vmousecancel" || evt === "vmouseup" ) {
+					$btn.removeClass( "ui-btn-down-" + theme ).addClass( "ui-btn-up-" + theme );
+				} else if ( evt === "vmouseover" || evt === "focus" ) {
+					if ( $.support.touch ) {
+						foc = setTimeout(function() {
+							$btn.removeClass( "ui-btn-up-" + theme ).addClass( "ui-btn-hover-" + theme );
+						}, hoverDelay );
+					} else {
 						$btn.removeClass( "ui-btn-up-" + theme ).addClass( "ui-btn-hover-" + theme );
-					}, hoverDelay );
-				} else {
-					$btn.removeClass( "ui-btn-up-" + theme ).addClass( "ui-btn-hover-" + theme );
+					}
+				} else if ( evt === "vmouseout" || evt === "blur" || evt === "scrollstart" ) {
+					$btn.removeClass( "ui-btn-hover-" + theme  + " ui-btn-down-" + theme ).addClass( "ui-btn-up-" + theme );
+					if ( hov ) {
+						clearTimeout( hov );
+					}
+					if ( foc ) {
+						clearTimeout( foc );
+					}
 				}
-			}
-		},
-		"vmouseout blur scrollstart": function( event ) {
-			var btn = closestEnabledButton( event.target ),
-				$btn, theme;
-
-			if ( btn ) {
-				$btn = $( btn );
-				theme = $btn.attr( "data-" + $.mobile.ns + "theme" );
-				$btn.removeClass( "ui-btn-hover-" + theme  + " ui-btn-down-" + theme ).addClass( "ui-btn-up-" + theme );
-
-				hov && clearTimeout( hov );
-				foc && clearTimeout( foc );
 			}
 		},
 		"focusin focus": function( event ){
