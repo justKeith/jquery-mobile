@@ -7,8 +7,8 @@
 }
 
 .in, .out {
-	-webkit-animation-timing-function: ease-out;
-	-webkit-animation-duration: 350ms;
-	-moz-animation-timing-function: ease-out;
-	-moz-animation-duration: 350ms;
+	-webkit-animation-timing-function: ease;
+	-webkit-animation-duration: 200ms;
+	-moz-animation-timing-function: ease;
+	-moz-animation-duration: 200ms;
 }
