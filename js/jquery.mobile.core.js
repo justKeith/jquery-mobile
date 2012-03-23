@@ -44,7 +44,7 @@ define( [ "jquery", "../external/requirejs/text!../version.txt", "./jquery.mobil
 		linkBindingEnabled: true,
 
 		// Set default page transition - 'none' for no transitions
-		defaultPageTransition: "fade",
+		defaultPageTransition: "slide",
 
 		// Set maximum window width for transitions to apply - 'false' for no limit
 		maxTransitionWidth: false,
