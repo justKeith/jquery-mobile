@@ -69,7 +69,30 @@ $.widget( "mobile.dialog", $.mobile.widget, {
 		.bind( "pagehide", function( e, ui ) {
 			$( this ).find( "." + $.mobile.activeBtnClass ).removeClass( $.mobile.activeBtnClass );
 		})
+		// When dialogs are hidden, modify the container background setting order from the page plugin 
+		// so that the dialog's background sticks around longer
+		.unbind( "pagebeforehide" )
 		// Override the theme set by the page plugin on pageshow
+		.bind( "pagebeforehide", function( e, ui ){
+			if( ui.nextPage.length ){
+				// Find pagebeforeshow events bound
+				var pbshows = ui.nextPage.data( "events" )[ "pagebeforeshow" ],
+					pbshowhandler;
+				// Loop events to find the one from the page plugin
+				$.each( pbshows, function(){
+					if( this.namespace === "page" ){
+						pbshowhandler = this.handler;
+						// temporarily disable the next page's beforeshow handler, reenable it on show
+						ui.nextPage
+							.unbind( "pagebeforeshow.page" )
+							.one( "pageshow.page", function(){
+								pbshowhandler.apply( this, arguments );
+								$( this ).bind( "pagebeforeshow.page" , pbshowhandler );
+							} );
+					}
+				} )
+			}
+		})
 		.bind( "pagebeforeshow", function(){
 			if( self.options.overlayTheme ){
 				self.element

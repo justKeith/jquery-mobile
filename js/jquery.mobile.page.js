@@ -25,10 +25,10 @@ $.widget( "mobile.page", $.mobile.widget, {
 		self.element
 			.attr( "tabindex", "0" )
 			.addClass( "ui-page ui-body-" + self.options.theme )
-			.bind( "pagebeforehide", function(){
+			.bind( "pagebeforehide.page", function(){
 				self.removeContainerBackground();
 			} )
-			.bind( "pagebeforeshow", function(){
+			.bind( "pagebeforeshow.page", function(){
 				self.setContainerBackground();
 			} );
 
