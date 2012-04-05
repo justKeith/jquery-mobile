@@ -53,6 +53,7 @@ init:
 
 # Build and minify the CSS files
 css: init
+	@@git log -1 --format=format:"Git Build: SHA1: %H <> Date: %cd" > sha.txt
 	# Build the CSS file with the theme included
 	${RUN_JS} \
 		external/r.js/dist/r.js \
@@ -61,10 +62,7 @@ css: init
 		out=${OUTPUT}/${NAME}.compiled.css
 	@@cat LICENSE-INFO.txt | ${VER} > ${OUTPUT}/${NAME}.css
 	@@cat ${OUTPUT}/${NAME}.compiled.css >> ${OUTPUT}/${NAME}.css
-	@@echo ${VER_MIN} > ${OUTPUT}/${NAME}.min.css
-	@@java -XX:ReservedCodeCacheSize=64m \
-		-jar build/yuicompressor-2.4.6.jar \
-		--type css ${OUTPUT}/${NAME}.compiled.css >> ${OUTPUT}/${NAME}.min.css
+	@@grunt cssmin:all
 	@@rm ${OUTPUT}/${NAME}.compiled.css
 	# Build the CSS Structure-only file
 	${RUN_JS} \
@@ -74,19 +72,14 @@ css: init
 	@@cat LICENSE-INFO.txt | ${VER} > ${OUTPUT}/${STRUCTURE}.css
 	@@cat ${OUTPUT}/${STRUCTURE}.compiled.css >> ${OUTPUT}/${STRUCTURE}.css
 	# ..... and then minify it
-	@@echo ${VER_MIN} > ${OUTPUT}/${STRUCTURE}.min.css
-	@@java -XX:ReservedCodeCacheSize=64m \
-		-jar build/yuicompressor-2.4.6.jar \
-		--type css ${OUTPUT}/${STRUCTURE}.compiled.css >> ${OUTPUT}/${STRUCTURE}.min.css
+	@@grunt cssmin:structure
 	@@rm ${OUTPUT}/${STRUCTURE}.compiled.css
 	# Build the theme only file
 	@@cat LICENSE-INFO.txt | ${VER} > ${OUTPUT}/${THEME_FILENAME}.css
 	@@cat css/themes/default/jquery.mobile.theme.css >> ${OUTPUT}/${THEME_FILENAME}.css
 	# ..... and then minify it
-	@@echo ${VER_MIN} > ${OUTPUT}/${THEME_FILENAME}.min.css
-	@@java -XX:ReservedCodeCacheSize=64m \
-		-jar build/yuicompressor-2.4.6.jar \
-		--type css ${OUTPUT}/${THEME_FILENAME}.css >> ${OUTPUT}/${THEME_FILENAME}.min.css
+	@@grunt cssmin:theme
+	@@rm sha.txt
 	# Copy in the images
 	@@cp -R css/themes/${THEME}/images ${OUTPUT}/
 	# Css portion is complete.

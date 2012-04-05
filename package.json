@@ -1,0 +1,33 @@
+{
+  "name": "jquery-mobile",
+  "title": "jQuery Mobile",
+  "description": "?",
+  "version": "1.1.0pre",
+  "homepage": "https://jquerymobile.com",
+  "author": {
+    "name": "?"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jquery/jquery-mobile.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jquery/jquery-mobile/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://www.opensource.org/licenses/MIT"
+    },
+    {
+      "type": "GPL",
+      "url": "http://www.opensource.org/licenses/GPL-2.0"
+    }
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "0.3.7",
+    "grunt-css": "0.1.1"
+  },
+  "keywords": []
+}

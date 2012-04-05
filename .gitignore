@@ -9,7 +9,7 @@ combine/
 compiled/
 tmp/
 *.swp
-.gitignore
+node_modules
 
 # branch preview
 branches
