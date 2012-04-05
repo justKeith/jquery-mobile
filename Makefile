@@ -50,10 +50,10 @@ clean:
 # Create the output directory.
 init:
 	@@mkdir -p ${OUTPUT}
+	@@git log -1 --format=format:"Git Build: SHA1: %H <> Date: %cd" > sha.txt
 
 # Build and minify the CSS files
 css: init
-	@@git log -1 --format=format:"Git Build: SHA1: %H <> Date: %cd" > sha.txt
 	# Build the CSS file with the theme included
 	${RUN_JS} \
 		external/r.js/dist/r.js \
@@ -79,7 +79,6 @@ css: init
 	@@cat css/themes/default/jquery.mobile.theme.css >> ${OUTPUT}/${THEME_FILENAME}.css
 	# ..... and then minify it
 	@@grunt cssmin:theme
-	@@rm sha.txt
 	# Copy in the images
 	@@cp -R css/themes/${THEME}/images ${OUTPUT}/
 	# Css portion is complete.
@@ -131,13 +130,7 @@ js: init
 	@@cat ${OUTPUT}/${NAME}.compiled.js | ${SED_VER_API} >> ${OUTPUT}/${NAME}.js
 	@@rm ${OUTPUT}/${NAME}.compiled.js
 	# ..... and then minify it
-	@@echo ${VER_MIN} > ${OUTPUT}/${NAME}.min.js
-	@@java -XX:ReservedCodeCacheSize=64m \
-		-jar build/google-compiler-20111003.jar \
-		--js ${OUTPUT}/${NAME}.js \
-		--js_output_file ${OUTPUT}/${NAME}.compiled.js
-	@@cat ${OUTPUT}/${NAME}.compiled.js >> ${OUTPUT}/${NAME}.min.js
-	@@rm ${OUTPUT}/${NAME}.compiled.js
+	@@grunt min:main
 	# -------------------------------------------------
 
 
