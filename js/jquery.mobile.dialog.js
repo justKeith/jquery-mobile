@@ -1,7 +1,11 @@
-/*
-* "dialog" plugin.
-*/
+//>>excludeStart("jqmBuildExclude", pragmas.jqmBuildExclude);
+//>>description: Displays a page as a modal dialog with inset appearance and overlay background
+//>>label: Dialogs
+//>>group: Widgets
+//>>css: ../css/themes/default/jquery.mobile.theme.css,../css/structure/jquery.mobile.dialog.css
 
+define( [ "jquery", "./jquery.mobile.widget" ], function( $ ) {
+//>>excludeEnd("jqmBuildExclude");
 (function( $, window, undefined ) {
 
 $.widget( "mobile.dialog", $.mobile.widget, {
@@ -13,27 +17,35 @@ $.widget( "mobile.dialog", $.mobile.widget, {
 	_create: function() {
 		var self = this,
 			$el = this.element,
-			headerCloseButton = $( "<a href='#' data-" + $.mobile.ns + "icon='delete' data-" + $.mobile.ns + "iconpos='notext'>"+ this.options.closeBtnText + "</a>" );
+			headerCloseButton = $( "<a href='#' data-" + $.mobile.ns + "icon='delete' data-" + $.mobile.ns + "iconpos='notext'>"+ this.options.closeBtnText + "</a>" ),
+			dialogWrap = $("<div/>", {
+					"role" : "dialog",
+					"class" : "ui-dialog-contain ui-corner-all ui-overlay-shadow"
+				});
 
-		$el.addClass( "ui-overlay-" + this.options.overlayTheme );
-
+		$el.addClass( "ui-dialog ui-overlay-" + this.options.overlayTheme );
+		
 		// Class the markup for dialog styling
 		// Set aria role
-		$el.attr( "role", "dialog" )
-			.addClass( "ui-dialog" )
-			.find( ":jqmData(role='header')" )
-			.addClass( "ui-corner-top ui-overlay-shadow" )
-				.prepend( headerCloseButton )
-			.end()
-			.find( ":jqmData(role='content'),:jqmData(role='footer')" )
-				.addClass( "ui-overlay-shadow" )
-				.last()
-				.addClass( "ui-corner-bottom" );
+		$el
+			.wrapInner( dialogWrap )
+			.children()
+				.find( ":jqmData(role='header')" )
+					.prepend( headerCloseButton )
+				.end()
+				.children( ':first-child')
+					.addClass( "ui-corner-top" )
+				.end()
+				.children( ":last-child" )
+					.addClass( "ui-corner-bottom" );
 
 		// this must be an anonymous function so that select menu dialogs can replace
 		// the close method. This is a change from previously just defining data-rel=back
 		// on the button and letting nav handle it
-		headerCloseButton.bind( "vclick", function() {
+		//
+		// Use click rather than vclick in order to prevent the possibility of unintentionally
+		// reopening the dialog if the dialog opening item was directly under the close button.
+		headerCloseButton.bind( "click", function() {
 			self.close();
 		});
 
@@ -54,8 +66,16 @@ $.widget( "mobile.dialog", $.mobile.widget, {
 					.attr( "data-" + $.mobile.ns + "direction", "reverse" );
 			}
 		})
-		.bind( "pagehide", function() {
+		.bind( "pagehide", function( e, ui ) {
 			$( this ).find( "." + $.mobile.activeBtnClass ).removeClass( $.mobile.activeBtnClass );
+		})
+		// Override the theme set by the page plugin on pageshow
+		.bind( "pagebeforeshow", function(){
+			if( self.options.overlayTheme ){
+				self.element
+					.page( "removeContainerBackground" )
+					.page( "setContainerBackground", self.options.overlayTheme );
+			}
 		});
 	},
 
@@ -67,7 +87,10 @@ $.widget( "mobile.dialog", $.mobile.widget, {
 
 //auto self-init widgets
 $( document ).delegate( $.mobile.dialog.prototype.options.initSelector, "pagecreate", function(){
-	$( this ).dialog();
+	$.mobile.dialog.prototype.enhance( this );
 });
 
 })( jQuery, this );
+//>>excludeStart("jqmBuildExclude", pragmas.jqmBuildExclude);
+});
+//>>excludeEnd("jqmBuildExclude");

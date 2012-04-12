@@ -1,6 +1,3 @@
-/*
-* "mouse" plugin
-*/
 
 // This plugin is an experiment for abstracting away the touch and mouse
 // events so that developers don't have to worry about which method of input
@@ -17,6 +14,13 @@
 // The current version exposes the following virtual events to jQuery bind methods:
 // "vmouseover vmousedown vmousemove vmouseup vclick vmouseout vmousecancel"
 
+//>>excludeStart("jqmBuildExclude", pragmas.jqmBuildExclude);
+//>>description: Normalizes touch/mouse events.
+//>>label: Virtual Mouse (vmouse) Bindings
+//>>group: Core
+
+define( [ "jquery" ], function( $ ) {
+//>>excludeEnd("jqmBuildExclude");
 (function( $, window, document, undefined ) {
 
 var dataPropertyName = "virtualMouseBindings",
@@ -65,7 +69,7 @@ function createVirtualEvent( event, eventType ) {
 
 	// addresses separation of $.event.props in to $.event.mouseHook.props and Issue 3280
 	// https://github.com/jquery/jquery-mobile/issues/3280
-	if ( t.search(/mouse/) >-1 ) {
+	if ( t.search( /^(mouse|click)/ ) > -1 ) {
 		props = mouseEventProps;
 	}
 
@@ -501,3 +505,6 @@ if ( eventCaptureSupported ) {
 	}, true);
 }
 })( jQuery, window, document );
+//>>excludeStart("jqmBuildExclude", pragmas.jqmBuildExclude);
+});
+//>>excludeEnd("jqmBuildExclude");

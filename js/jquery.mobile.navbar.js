@@ -1,7 +1,12 @@
-/*
-* "navbar" plugin
-*/
+//>>excludeStart("jqmBuildExclude", pragmas.jqmBuildExclude);
+//>>description: Formats groups of links as horizontal navigation bars.
+//>>label: Navbars
+//>>group: Widgets
+//>>css: ../css/themes/default/jquery.mobile.theme.css, ../css/structure/jquery.mobile.navbar.css
 
+
+define( [ "jquery", "./jquery.mobile.widget", "./jquery.mobile.buttonMarkup", "./jquery.mobile.grid" ], function( $ ) {
+//>>excludeEnd("jqmBuildExclude");
 (function( $, undefined ) {
 
 $.widget( "mobile.navbar", $.mobile.widget, {
@@ -21,7 +26,8 @@ $.widget( "mobile.navbar", $.mobile.widget, {
 		$navbar.addClass( "ui-navbar" )
 			.attr( "role","navigation" )
 			.find( "ul" )
-				.grid({ grid: this.options.grid });
+			.jqmEnhanceable()
+			.grid({ grid: this.options.grid });
 
 		if ( !iconpos ) {
 			$navbar.addClass( "ui-navbar-noicons" );
@@ -30,21 +36,30 @@ $.widget( "mobile.navbar", $.mobile.widget, {
 		$navbtns.buttonMarkup({
 			corners:	false,
 			shadow:		false,
+			inline:     true,
 			iconpos:	iconpos
 		});
 
 		$navbar.delegate( "a", "vclick", function( event ) {
 			if( !$(event.target).hasClass("ui-disabled") ) {
-				$navbtns.not( ".ui-state-persist" ).removeClass( $.mobile.activeBtnClass );
+				$navbtns.removeClass( $.mobile.activeBtnClass );
 				$( this ).addClass( $.mobile.activeBtnClass );
 			}
+		});
+
+		// Buttons in the navbar with ui-state-persist class should regain their active state before page show
+		$navbar.closest( ".ui-page" ).bind( "pagebeforeshow", function() {
+			$navbtns.filter( ".ui-state-persist" ).addClass( $.mobile.activeBtnClass );
 		});
 	}
 });
 
 //auto self-init widgets
 $( document ).bind( "pagecreate create", function( e ){
-	$( $.mobile.navbar.prototype.options.initSelector, e.target ).navbar();
+	$.mobile.navbar.prototype.enhanceWithin( e.target );
 });
 
 })( jQuery );
+//>>excludeStart("jqmBuildExclude", pragmas.jqmBuildExclude);
+});
+//>>excludeEnd("jqmBuildExclude");
