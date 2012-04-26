@@ -34,6 +34,7 @@ define( [ "jquery", "./jquery.mobile.widget", "./jquery.mobile.core", "./jquery.
 					// Rendering engine is Webkit, and capture major version
 					wkmatch = ua.match( /AppleWebKit\/([0-9]+)/ ),
 					wkversion = !!wkmatch && wkmatch[ 1 ],
+					androidversion = ua.match( /Android ([0-9\.]+);/ ),
 					ffmatch = ua.match( /Fennec\/([0-9]+)/ ),
 					ffversion = !!ffmatch && ffmatch[ 1 ],
 					operammobilematch = ua.match( /Opera Mobi\/([0-9]+)/ ),
@@ -50,6 +51,9 @@ define( [ "jquery", "./jquery.mobile.widget", "./jquery.mobile.core", "./jquery.
 					||
 					//Android lte 2.1: Platform is Android and Webkit version is less than 533 (Android 2.2)
 					( ua.indexOf( "Android" ) > -1 && wkversion && wkversion < 533 )
+					||
+					// Android 2.3.5 and 2.3.6 webkit regressed on position:fixed support
+					( wkversion && androidversion && ( androidversion === "2.3.5" || androidversion === "2.3.6" ) )
 					||
 					// Firefox Mobile before 6.0 -
 					( ffversion && ffversion < 6 )
